@@ -1,0 +1,43 @@
+# Virtual environments
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Test and tool caches
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.ruff_cache/
+.mypy_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+
+# Local secrets and settings
+.env
+.env.*
+!.env.example
+
+# Data files
+data/raw/*
+data/processed/*
+
+# Generated model and experiment artifacts
+mlruns/
+mlartifacts/
+mlflow.db
+models/
