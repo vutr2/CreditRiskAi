@@ -112,6 +112,19 @@ A record of the mistakes I made, the concepts I need to master, and checklists f
   `src/credit_risk_ai/data/load.py` → drop `src/`, drop `.py`, replace `/` with `.` → `credit_risk_ai.data.load`.
   Python finds the package because it is installed (`uv pip install -e .`), not because of a path.
 
+### 2026-11-14 · Notebook 03 (cross-validation)
+
+#### 1.14 A "default rate" that measured sizes, not labels
+
+- **Symptom:** every fold printed `default_rate = 0.25`, while the expected value was about 0.067.
+- **Cause:** the formula was `len(val_idx) / len(train_idx)` = 29,879 / 119,512 ≈ 0.25. That is the size ratio of validation to train (20% / 80%), and it never looks at `y`.
+- **Fix:** the default rate is the share of 1s among the validation labels:
+  ```python
+  y.iloc[val_idx].mean()  # y is 0/1, so the mean is the share of 1s
+  ```
+  `.iloc` because `cv.split` returns row positions, not `id` values.
+- **Lesson:** compare every output with its expected value before moving on. A number that is far off (0.25 vs 0.067), or suspiciously round (exactly ¼ = 20/80), means the formula measures the wrong thing. Ask: "which data does this formula actually read?"
+
 ---
 
 ## 2. Concepts to master
@@ -274,6 +287,25 @@ No need to learn all of sklearn. The "everything works the same way" table and t
   - Max-F1 assumes both errors cost the same, so it is only a neutral starting point.
 - Choose the threshold on the **validation set only**, then keep it fixed. Never tune it on the test set (golden rule, 2.9).
 
+### 2.11 Running in parallel: `n_jobs`
+
+`n_jobs` (in `cross_validate`, `GridSearchCV`, `RandomizedSearchCV`, ...) is the **maximum number of tasks that may run at the same time**.
+
+| Value | Meaning |
+|---|---|
+| `1` | 1 task at a time: the folds run one after another |
+| `5` | up to 5 tasks at a time |
+| `-1` | **as many as there are CPU cores** (10 on this Mac) |
+| `-2` | all cores except one, so the computer stays responsive |
+
+- `-1` does **not** mean "1 core". It is a code for "all cores", so the same code works on any machine.
+- The number of tasks also limits it: `cross_validate` with 5 folds makes **5 tasks**. With `n_jobs=-1` on 10 cores, 5 cores work (one per fold) and 5 stay idle.
+  ```
+  n_jobs=1   ->  fold 0 -> fold 1 -> fold 2 -> fold 3 -> fold 4   (one after another)
+  n_jobs=-1  ->  folds 0, 1, 2, 3, 4 all at once on 5 cores
+  ```
+- The results are **identical** for any value, because each fold is computed independently. Only the run time changes.
+
 ---
 
 ## 3. Checklists for future exercises
@@ -298,6 +330,7 @@ No need to learn all of sklearn. The "everything works the same way" table and t
 - [ ] No copy-pasted code: move it into a shared function
 - [ ] Named constants instead of bare numbers (`MAX_UTILIZATION = 10`)
 - [ ] Tests: normal case, each rule, boundary values, real data (with `skipif`)
+- [ ] Know the expected value before running a cell, and compare the output with it
 
 ### Building models
 
