@@ -37,7 +37,8 @@ data/raw/*
 data/processed/*
 
 # Generated model and experiment artifacts
-mlruns/
-mlartifacts/
-mlflow.db
-models/
+# Leading "/" = only at the repo root, so src/credit_risk_ai/models/ (code) is not ignored
+/mlruns/
+/mlartifacts/
+/mlflow.db
+/models/
