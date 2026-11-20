@@ -42,3 +42,4 @@ data/processed/*
 /mlartifacts/
 /mlflow.db
 /models/
+/submissions/
