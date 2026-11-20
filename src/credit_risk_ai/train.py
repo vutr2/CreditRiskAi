@@ -21,7 +21,11 @@ import pandas as pd
 from sklearn.model_selection import StratifiedKFold, cross_validate
 
 from credit_risk_ai.data.prepare import prepare_test, prepare_train
-from credit_risk_ai.models.pipeline import RANDOM_STATE, build_hist_gradient_boosting
+from credit_risk_ai.models.pipeline import (
+    RANDOM_STATE,
+    SKOPS_TRUSTED_TYPES,
+    build_hist_gradient_boosting,
+)
 from credit_risk_ai.paths import (
     MLFLOW_ARTIFACT_DIR,
     MLFLOW_TRACKING_URI,
@@ -31,12 +35,6 @@ from credit_risk_ai.paths import (
 
 N_SPLITS = 5
 EXPERIMENT_NAME = "credit-risk-final-model"
-
-# MLflow saves sklearn models in the skops format, which only loads types it
-# knows are safe. HistGradientBoosting's tree class is not on that list, so it
-# must be trusted explicitly. That is safe here because we train the model
-# ourselves; never trust types in a model file from an unknown source.
-SKOPS_TRUSTED_TYPES = ["sklearn.ensemble._hist_gradient_boosting.predictor.TreePredictor"]
 
 
 def cross_validate_model(build, X, y):

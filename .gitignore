@@ -43,3 +43,4 @@ data/processed/*
 /mlflow.db
 /models/
 /submissions/
+/hf_export/

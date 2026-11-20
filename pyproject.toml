@@ -16,6 +16,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "httpx",  # needed by FastAPI's TestClient in tests/test_api.py
+    "huggingface_hub",  # the `hf` command used to upload hf_export/ to the Hugging Face Hub
     "ipykernel",
     "matplotlib",
     "pytest>=8",

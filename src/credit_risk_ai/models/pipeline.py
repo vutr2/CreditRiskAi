@@ -40,6 +40,13 @@ TUNED_HGB_PARAMS = {
 }
 
 
+# skops (the safe file format used by MLflow and the Hugging Face export) only
+# loads types it knows are safe. HistGradientBoosting's tree class is not on that
+# list, so it must be trusted explicitly. That is safe for a model we trained
+# ourselves; never trust types in a model file from an unknown source.
+SKOPS_TRUSTED_TYPES = ["sklearn.ensemble._hist_gradient_boosting.predictor.TreePredictor"]
+
+
 def build_tuned_hist_gradient_boosting(random_state=RANDOM_STATE):
     """Return an unfitted HistGradientBoostingClassifier with the notebook 05 hyperparameters.
 
